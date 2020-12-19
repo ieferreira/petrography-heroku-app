@@ -2,7 +2,7 @@ import cv2
 import streamlit as st
 from helper import *
 from PIL import Image, ImageOps
-
+import pandas as pd
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -73,6 +73,14 @@ if file:
             img_res, labels = watershed(img)
             st.write(f"Granos encontrados usando Watershed: {labels}")
             st.image(img_res, use_column_width=True)
+            if st.sidebar.checkbox("Mostrar datos estadísticos", False):
+                st.subheader("Datos Estadísticos (en pixeles o pixeles cuadrados)")
+                df = pd.read_csv("medidas.csv")
+                df = df.drop(columns = ["Unnamed: 0", "MinIntensity", "MeanIntensity","MaxIntensity", "Perimeter.1"])
+                df = df.rename(columns={"Area": "Área", "equivalent_diameter": "Diámetro equivalente", "orientation": "Orientación",\
+                                "MajorAxisLength": "Longitud Eje Mayor", "MinorAxisLength": "Longitud Eje Menor",\
+                                "Perimeter": "Perímetro"})
+                st.write(df)
 
             if st.sidebar.radio("SLIC (Clusters)", (False, True), key="slic"):
                 img_slic, segments = slic_image(img_mshift, labels)

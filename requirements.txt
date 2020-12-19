@@ -2,5 +2,6 @@ streamlit
 opencv-python-headless==4.2.0.32
 numpy
 pillow
+pandas
 scikit-image
 scipy

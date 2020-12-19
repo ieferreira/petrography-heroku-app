@@ -50,7 +50,7 @@ def watershed(img):
     except:
         pass # alreary converted to grayscale for filter
     kernel = np.ones((3,3), np.uint8)
-    ret,thresh1 = cv2.threshold(img,30,255,cv2.THRESH_BINARY)
+    _,thresh1 = cv2.threshold(img,30,255,cv2.THRESH_BINARY)
     eroded = cv2.erode(thresh1, kernel, iterations=0)
     dilated = cv2.dilate(eroded, kernel, iterations=0)
     dst = cv2.filter2D(dilated,-1,kernel)
@@ -59,6 +59,30 @@ def watershed(img):
     s = [[1,1,1], [1,1,1], [1,1,1]]
     labeled_mask, num_labels = ndimage.label(mask, structure=s)
     resultado_final = color.label2rgb(labeled_mask, bg_label=0)
+    clusters = measure.regionprops(labeled_mask, img)
+    propList = ["Area", "equivalent_diameter", "orientation",
+                "MajorAxisLength", "MinorAxisLength", "Perimeter", 
+                "Perimeter", "MinIntensity", "MeanIntensity", 
+                "MaxIntensity"]
+
+    output_file = open("medidas"+".csv", "w")
+    output_file.write(("," + ",".join(propList)+"\n"))
+
+    for cluster_props in clusters:
+        output_file.write(str(cluster_props["Label"]))
+        for _, prop in enumerate(propList):
+            if(prop=="Area"):
+                to_print = cluster_props[prop]*1**2
+            elif(prop=="orientation"):
+                to_print = cluster_props[prop]*57.2958
+            elif(prop.find("Intensity")<0):
+                to_print = cluster_props[prop]*1
+            else:
+                to_print = cluster_props[prop]
+            output_file.write("," +str(to_print))
+        output_file.write("\n")
+        
+
     return resultado_final, num_labels
 
 def slic_image(img, num):
