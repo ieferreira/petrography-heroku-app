@@ -2,7 +2,6 @@ import cv2
 import streamlit as st
 from helper import *
 from PIL import Image, ImageOps
-import tensorflow.keras
 
 
 def local_css(file_name):
@@ -22,9 +21,6 @@ file = st.file_uploader("", type=["jpg"])
 if file is None:
     st.text("Por favor, sube una imagen...")
 
-np.set_printoptions(suppress=True)
-model_type = tensorflow.keras.models.load_model('type.h5', compile=False)
-model_pl = tensorflow.keras.models.load_model('xplppl.h5', compile=False)
 
 def predict_type(image_data, model):
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32) #fit images to model sizes
