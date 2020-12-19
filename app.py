@@ -21,55 +21,8 @@ file = st.file_uploader("", type=["jpg"])
 if file is None:
     st.text("Por favor, sube una imagen...")
 
-
-def predict_type(image_data, model):
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32) #fit images to model sizes
-    size = (224, 224)
-    image = ImageOps.fit(image_data, size, Image.ANTIALIAS) 
-    image_array = np.asarray(image)
-    normalized_image_array = (image_array.astype(np.float32) / 127.0) - 1
-    data[0] = normalized_image_array
-    prediction = model.predict(data)
-    return prediction
-
-def predict_pl(image_data, model):
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32) #fit images to model sizes
-    size = (224, 224)
-    image = ImageOps.fit(image_data, size, Image.ANTIALIAS) 
-    image_array = np.asarray(image)
-    normalized_image_array = (image_array.astype(np.float32) / 127.0) - 1
-    data[0] = normalized_image_array
-    prediction = model.predict(data)
-    return prediction
-
-
-
 if file:
     img = import_image(file)
-    
-    if st.sidebar.checkbox("Clasificar (rudimentario)", key='clasificar'):
-        img_pred = Image.open(file)
-        prediction = predict_type(img_pred, model_type)
-        
-        if np.argmax(prediction) == 0:
-            st.write("Es una roca ígnea volcánica")
-        elif np.argmax(prediction) == 1:
-            st.write("Es una roca ígnea plutónica")
-        elif np.argmax(prediction)==2:
-            st.write("Es una roca metamórfica")
-        else:
-            st.write("Es una roca sedimentaria")
-        st.text("Probabilidad (0: Volcánica, 1: Plutónica, 2: Metamórfica, 3: Sedimentaria)")
-        st.write(prediction*100) 
-
-        predicion_pl = predict_pl(img_pred, model_pl)
-        if np.argmax(prediction) == 0:
-            st.write("Esta en PPL")
-        elif np.argmax(prediction) == 1:
-            st.write("Es en XPL")
-
-        st.text("Probabilidad (0: XPL, 1: PPL)")
-        st.write(prediction*100) 
 
     st.sidebar.subheader("Elige un algoritmo de detección de bordes")
     bordes = st.sidebar.radio("Detección de bordes", ("Ninguno", "Canny", "Sobel", "Prewitt"), key="border")
