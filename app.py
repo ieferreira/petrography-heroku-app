@@ -10,7 +10,7 @@ def local_css(file_name):
 
 local_css("style.css")
 
-st.markdown("""## Algoritmos de visión artificial y secciones delgadas""")
+st.markdown("""## Algoritmos de visión artificial y secciones delgadas 🔬""")
 st.sidebar.title("Panel de control")
 st.markdown("Diseñado para imagenes petrográficas de secciones delgadas")
 st.sidebar.markdown("Parametros y valores")
@@ -68,7 +68,7 @@ if file:
             img = prewitt_edge(img)
             st.image(img, use_column_width=True)
 
-
+        st.sidebar.markdown("Conteo de granos (rudimentario) 🤹‍♂️")
         if st.sidebar.radio("Watershed", (False, True), key="watershed"):           
             img_res, labels = watershed(img)
             st.write(f"Granos encontrados usando Watershed: {labels}")
@@ -87,4 +87,4 @@ if file:
                 st.write(f"Usando los granos encontrados en Watershed, se encuentran {len(np.unique(segments))} usando SLIC")
                 st.image(img_slic, use_column_width=True)
 
-st.write("Programado por Iván Ferreira, unalgeo-Bogotá (2020)")
+st.markdown("Programado por Iván Ferreira, UnalGeo-Bogotá (2020). [Github! 🎯](https://github.com/ieferreira)")
