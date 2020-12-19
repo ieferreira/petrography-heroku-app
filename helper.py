@@ -95,3 +95,36 @@ def slic_image(img, num):
     segments = slic(img, n_segments = num, sigma = 3, start_label=1)
     result = mark_boundaries(img, segments)
     return result, segments
+
+@st.cache(suppress_st_warning=True)
+def mean_shift(img, sp, sr):
+    return cv2.pyrMeanShiftFiltering(img, sp, sr)
+
+@st.cache(suppress_st_warning=True)
+def gaussian_blur(img, kernel):
+    try:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    except:
+        pass
+    return cv2.GaussianBlur(img,(kernel,kernel),0)
+
+
+@st.cache(suppress_st_warning=True)
+def draw_borders(img,img_real, gthan=50):
+    kernel = np.ones((3,3),np.uint8)
+    closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+    binary = cv2.threshold(closing,127,255,cv2.THRESH_BINARY)[1]
+    w, h ,x= img_real.shape
+    original = np.ones((w,h,x), dtype="uint8")*255
+    cnts = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+    found = []
+    for c in cnts:
+        area = cv2.contourArea(c)
+        if area > gthan:
+            cv2.drawContours(original,[c], 0, ( 200, 0, 128 ), 2)
+            found.append(c)
+    contours = cv2.addWeighted(img_real,0.4,original,0.6,0) 
+
+    return contours, found
