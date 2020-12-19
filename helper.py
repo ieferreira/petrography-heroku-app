@@ -5,13 +5,16 @@ from skimage import measure, color, io
 from scipy import ndimage
 from skimage.segmentation import slic
 from skimage.segmentation import mark_boundaries
+import streamlit as st
 
+@st.cache(suppress_st_warning=True) 
 def import_image(file):
     img = Image.open(file)
     img = img.convert("RGB")
     img = np.array(img)
     return img
 
+@st.cache(suppress_st_warning=True) 
 def canny_edge(img, lw=100, hg=200):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -19,7 +22,7 @@ def canny_edge(img, lw=100, hg=200):
         pass # alreary converted to grayscale for filter
     return cv2.Canny(img, lw, hg)
 
-
+@st.cache(suppress_st_warning=True) 
 def sobel_edge(img):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -32,6 +35,7 @@ def sobel_edge(img):
     grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0) # add x and y
     return grad
 
+@st.cache(suppress_st_warning=True) 
 def prewitt_edge(img):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -44,6 +48,7 @@ def prewitt_edge(img):
     prewitt = img_prewittx + img_prewitty
     return prewitt
 
+@st.cache(suppress_st_warning=True) 
 def watershed(img):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -85,6 +90,7 @@ def watershed(img):
 
     return resultado_final, num_labels
 
+@st.cache(suppress_st_warning=True) 
 def slic_image(img, num):
     segments = slic(img, n_segments = num, sigma = 3, start_label=1)
     result = mark_boundaries(img, segments)
