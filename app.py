@@ -1,5 +1,6 @@
 import streamlit as st
 from helper import *
+from hed  import *
 import pandas as pd
 
 def local_css(file_name):
@@ -45,7 +46,7 @@ if file:
             img_mshift = img.copy()
 
     st.sidebar.markdown("### Detección de Bordes")
-    bordes = st.sidebar.radio("", ("Ninguno", "Canny", "Sobel", "Prewitt"), key="border")
+    bordes = st.sidebar.radio("", ("Ninguno", "Canny", "Sobel", "Prewitt", "HED"), key="border")
 
     st.write("### Imagen")
 
@@ -62,10 +63,28 @@ if file:
 
         elif bordes == "Sobel":
             img = sobel_edge(img)
+            if st.sidebar.radio("Binarize ☯", (False, True), key="bin"):
+                low = st.sidebar.number_input("umbral inferior binarización", 0, 254,100, step=10, key='low')
+                high = st.sidebar.number_input("umbral superior binarización", 1, 255,255, step=10, key='high') 
+                img = binarize(img, low, high)
             st.image(img, use_column_width=True)
+
 
         elif bordes == "Prewitt":
             img = prewitt_edge(img)
+            if st.sidebar.radio("Binarize ☯", (False, True), key="bin"):
+                low = st.sidebar.number_input("umbral inferior binarización", 0, 254,100, step=10, key='low')
+                high = st.sidebar.number_input("umbral superior binarización", 1, 255,255, step=10, key='high') 
+                img = binarize(img, low, high)
+            st.image(img, use_column_width=True)
+        
+        elif bordes == "HED":
+            img = hed_filter(img)
+
+            if st.sidebar.radio("Binarize ☯", (False, True), key="bin"):
+                low = st.sidebar.number_input("umbral inferior binarización", 0, 254,100, step=10, key='low')
+                high = st.sidebar.number_input("umbral superior binarización", 1, 255,255, step=10, key='high') 
+                img = binarize(img, low, high)
             st.image(img, use_column_width=True)
 
         st.sidebar.markdown("### Conteo de granos (rudimentario) 🤹‍♂️")
@@ -81,16 +100,17 @@ if file:
                                 "MajorAxisLength": "Longitud Eje Mayor", "MinorAxisLength": "Longitud Eje Menor",\
                                 "Perimeter": "Perímetro"})
                 st.write(df)
+            if mshift == True:
+                if st.sidebar.radio("SLIC (Clusters)", (False, True), key="slic"):
+                    img_slic, segments = slic_image(img_mshift, labels)
+                    st.write(f"Usando los granos encontrados en Watershed, se encuentran {len(np.unique(segments))} usando SLIC")
+                    st.image(img_slic, use_column_width=True)
 
-            if st.sidebar.radio("SLIC (Clusters)", (False, True), key="slic"):
-                img_slic, segments = slic_image(img_mshift, labels)
-                st.write(f"Usando los granos encontrados en Watershed, se encuentran {len(np.unique(segments))} usando SLIC")
-                st.image(img_slic, use_column_width=True)
-
-        if st.sidebar.radio("Find Contours", (False, True), key="fcontours") and bordes =="Canny":
-            treshold = st.sidebar.number_input("Umbral desde el cual contar contornos", 50, 200, step=10, key='th')
-            contours, nums = draw_borders(img,  img_org, treshold)
-            st.write(f"Granos encontrados usando contornos {len(nums)}")
-            st.image(contours, use_column_width=True)
+        if bordes == "Canny":
+            if st.sidebar.radio("Find Contours", (False, True), key="fcontours"):
+                treshold = st.sidebar.number_input("Umbral desde el cual contar contornos", 1, 300, 50,step=10, key='th')
+                contours, nums = draw_borders(img,  img_org, treshold)
+                st.write(f"Granos encontrados usando contornos {len(nums)}")
+                st.image(contours, use_column_width=True)
 
 st.markdown("Programado por Iván Ferreira, UnalGeo-Bogotá (2020). [Github! 🎯](https://github.com/ieferreira)")

@@ -128,3 +128,17 @@ def draw_borders(img,img_real, gthan=50):
     contours = cv2.addWeighted(img_real,0.4,original,0.6,0) 
 
     return contours, found
+
+@st.cache(suppress_st_warning=True)
+
+def binarize(img, lw=100, hg=255):
+    try:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    except:
+        pass
+    _,binary = cv2.threshold(img,lw,hg,cv2.THRESH_BINARY)
+    return binary
+
+
+
+
