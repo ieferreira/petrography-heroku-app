@@ -58,7 +58,7 @@ if file:
         mshift = st.sidebar.radio("Mean Shift Filter (Gaussian en False)", (False, True), key='meanshift')
         if mshift:
             sp = st.sidebar.number_input("sp: radio ventana", 1, 500,20, step=10, key='sp')
-            sr = st.sidebar.number_input("sr: radio ventana de color", 1, 500,20, step=10, key='sr')
+            sr = st.sidebar.number_input("sr: radio ventana de color", 1, 500,50, step=10, key='sr')
             img = mean_shift(img, sp, sr)
             img_mshift = img.copy()
 
