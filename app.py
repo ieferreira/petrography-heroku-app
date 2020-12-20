@@ -23,10 +23,14 @@ file = st.file_uploader("", type=["jpg","png"])
 
 if file is None:
     st.text("Upload an image..")
+    st.sidebar.markdown("#### Waiting for an image...")
 
 if file:
     img = import_image(file)
+    img_org = img.copy()    
+    st.sidebar.markdown("### Preprocessing")
     color_model = st.sidebar.selectbox("Color Model", ("RGB", "GRAY", "HSL", "HSV", "YBR"))
+
     if color_model == "RGB":
         pass
     elif color_model == "HSL":
@@ -39,11 +43,7 @@ if file:
         img = convert_gray(img)
 
 
-    img_org = img.copy()
-    
-    st.sidebar.markdown("### Preprocessing")
-    gauss = st.sidebar.radio("Gaussian Filter", (False, True), key='gauss')
-    
+    gauss = st.sidebar.radio("Gaussian Filter", (False, True), key='gauss')    
 
     if gauss:
         ksize = st.sidebar.number_input("Size of kernel (odd)", 3, 15, step=2, key='ksize')
