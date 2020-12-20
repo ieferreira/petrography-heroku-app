@@ -7,6 +7,7 @@ from skimage.segmentation import slic
 from skimage.segmentation import mark_boundaries
 import streamlit as st
 
+#! import images, maybe convert to .tiff later?
 @st.cache(suppress_st_warning=True) 
 def import_image(file):
     img = Image.open(file)
@@ -14,6 +15,7 @@ def import_image(file):
     img = np.array(img)
     return img
 
+#! Edge detections, HED in hed.py
 @st.cache(suppress_st_warning=True) 
 def canny_edge(img, lw=100, hg=200):
     try:
@@ -48,6 +50,7 @@ def prewitt_edge(img):
     prewitt = img_prewittx + img_prewitty
     return prewitt
 
+#! Color models! 
 @st.cache(suppress_st_warning=True) 
 def convert_hsl(img):
     img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -65,12 +68,14 @@ def convert_ybr(img):
     img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img_ybr = cv2.cvtColor(img,cv2.COLOR_BGR2YCR_CB)
     return img_ybr
+
 @st.cache(suppress_st_warning=True) 
 def convert_gray(img):
     img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     return img_gray
 
+#! Grain counting algorithms
 @st.cache(suppress_st_warning=True) 
 def watershed(img):
     try:
@@ -119,18 +124,6 @@ def slic_image(img, num):
     return result, segments
 
 @st.cache(suppress_st_warning=True)
-def mean_shift(img, sp, sr):
-    return cv2.pyrMeanShiftFiltering(img, sp, sr)
-
-@st.cache(suppress_st_warning=True)
-def gaussian_blur(img, kernel):
-    try:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    except:
-        pass
-    return cv2.GaussianBlur(img,(kernel,kernel),0)
-
-@st.cache(suppress_st_warning=True)
 def draw_borders(img,img_real, gthan=50):
     kernel = np.ones((3,3),np.uint8)
     closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
@@ -149,6 +142,19 @@ def draw_borders(img,img_real, gthan=50):
     contours = cv2.addWeighted(img_real,0.4,original,0.6,0) 
 
     return contours, found
+
+#! Preprocessing (mean shit and gaussian blur)
+@st.cache(suppress_st_warning=True)
+def mean_shift(img, sp, sr):
+    return cv2.pyrMeanShiftFiltering(img, sp, sr)
+
+@st.cache(suppress_st_warning=True)
+def gaussian_blur(img, kernel):
+    try:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    except:
+        pass
+    return cv2.GaussianBlur(img,(kernel,kernel),0)
 
 @st.cache(suppress_st_warning=True)
 def binarize(img, lw=100, hg=255):
