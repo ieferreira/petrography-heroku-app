@@ -15,7 +15,7 @@ st.markdown("Diseñado para imagenes petrográficas de secciones delgadas")
 st.sidebar.markdown("Algoritmos a usar y parámetros con los que se implementan")
 st.write("#### Por favor, sube una imagen")
 
-file = st.file_uploader("", type=["jpg"])
+file = st.file_uploader("", type=["jpg","png"])
 
 if file is None:
     st.text("Por favor, sube una imagen...")

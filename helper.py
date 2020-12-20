@@ -108,7 +108,6 @@ def gaussian_blur(img, kernel):
         pass
     return cv2.GaussianBlur(img,(kernel,kernel),0)
 
-
 @st.cache(suppress_st_warning=True)
 def draw_borders(img,img_real, gthan=50):
     kernel = np.ones((3,3),np.uint8)
@@ -130,7 +129,6 @@ def draw_borders(img,img_real, gthan=50):
     return contours, found
 
 @st.cache(suppress_st_warning=True)
-
 def binarize(img, lw=100, hg=255):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
