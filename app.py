@@ -68,7 +68,7 @@ if file:
             img = prewitt_edge(img)
             st.image(img, use_column_width=True)
 
-        st.sidebar.markdown("Conteo de granos (rudimentario) 🤹‍♂️")
+        st.sidebar.markdown("### Conteo de granos (rudimentario) 🤹‍♂️")
         if st.sidebar.radio("Watershed", (False, True), key="watershed"):           
             img_res, labels = watershed(img)
             st.write(f"Granos encontrados usando Watershed: {labels}")
