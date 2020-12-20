@@ -49,16 +49,38 @@ def prewitt_edge(img):
     return prewitt
 
 @st.cache(suppress_st_warning=True) 
+def convert_hsl(img):
+    img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_hsl = cv2.cvtColor(img,cv2.COLOR_BGR2HLS)
+    return img_hsl
+
+@st.cache(suppress_st_warning=True) 
+def convert_hsv(img):
+    img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+    return img_hsv
+
+@st.cache(suppress_st_warning=True) 
+def convert_ybr(img):
+    img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_ybr = cv2.cvtColor(img,cv2.COLOR_BGR2YCR_CB)
+    return img_ybr
+@st.cache(suppress_st_warning=True) 
+def convert_gray(img):
+    img= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    return img_gray
+
+@st.cache(suppress_st_warning=True) 
 def watershed(img):
     try:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     except:
         pass # alreary converted to grayscale for filter
     kernel = np.ones((3,3), np.uint8)
+    img =  cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
     _,thresh1 = cv2.threshold(img,30,255,cv2.THRESH_BINARY)
-    eroded = cv2.erode(thresh1, kernel, iterations=0)
-    dilated = cv2.dilate(eroded, kernel, iterations=0)
-    dst = cv2.filter2D(dilated,-1,kernel)
+    dst = cv2.filter2D(thresh1,-1,kernel)
     blur = cv2.GaussianBlur(dst,(5,5),0)
     mask = blur == 0
     s = [[1,1,1], [1,1,1], [1,1,1]]
