@@ -6,6 +6,7 @@ import streamlit as st
 from helper import *
 from hed  import *
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -115,8 +116,13 @@ if file:
                 df = df.drop(columns = ["Unnamed: 0", "MinIntensity", "MeanIntensity","MaxIntensity", "Perimeter.1"])
                 df = df.rename(columns={"Area": "Area", "equivalent_diameter": "Equivalent Diameter", "orientation": "Orientation",\
                                 "MajorAxisLength": "Major Axis Length", "MinorAxisLength": "Minor Axis Length",\
-                                "Perimeter": "Perimeter"})
+                                "Perimeter": "Perimeter"})                                
                 st.write(df)
+                df_hist = df["Perimeter"]
+                df_hist.hist(bins=100)
+                plt.title("Size Distribution of Grain Diameter")
+                plt.show()
+                st.pyplot()
             try:
                 if mshift == True:
                     if st.sidebar.radio("SLIC (Clusters)", (False, True), key="slic"):
