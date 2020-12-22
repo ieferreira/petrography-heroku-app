@@ -118,11 +118,11 @@ if file:
                                 "MajorAxisLength": "Major Axis Length", "MinorAxisLength": "Minor Axis Length",\
                                 "Perimeter": "Perimeter"})                                
                 st.write(df)
+                fig, ax = plt.subplots()
                 df_hist = df["Perimeter"]
                 df_hist.hist(bins=100)
                 plt.title("Size Distribution of Grain Diameter")
-                plt.show()
-                st.pyplot()
+                st.pyplot(fig)
             try:
                 if mshift == True:
                     if st.sidebar.radio("SLIC (Clusters)", (False, True), key="slic"):
