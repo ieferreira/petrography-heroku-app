@@ -96,14 +96,14 @@ if file:
                 img = binarize(img, low, high)
             st.image(img, use_column_width=True)
         
-        elif bordes == "HED":
-            img = hed_filter(img)
+        # elif bordes == "HED":
+        #     img = hed_filter(img)
 
-            if st.sidebar.radio("Binarize ☯", (False, True), key="bin"):
-                low = st.sidebar.number_input("Lower threshold (binarization)", 0, 254,100, step=10, key='low')
-                high = st.sidebar.number_input("Upper threshold (binarization)", 1, 255,255, step=10, key='high') 
-                img = binarize(img, low, high)
-            st.image(img, use_column_width=True)
+        #     if st.sidebar.radio("Binarize ☯", (False, True), key="bin"):
+        #         low = st.sidebar.number_input("Lower threshold (binarization)", 0, 254,100, step=10, key='low')
+        #         high = st.sidebar.number_input("Upper threshold (binarization)", 1, 255,255, step=10, key='high') 
+        #         img = binarize(img, low, high)
+        #     st.image(img, use_column_width=True)
 
         st.sidebar.markdown("### Grain Counting (work in progress) 🤹‍♂️")
         if st.sidebar.radio("Watershed", (False, True), key="watershed"):           
