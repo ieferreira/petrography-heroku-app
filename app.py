@@ -64,7 +64,7 @@ if file:
             img_mshift = img.copy()
 
     st.sidebar.markdown("### Edge detection")
-    bordes = st.sidebar.radio("", ("None", "Canny", "Sobel", "Prewitt", "HED"), key="border")
+    bordes = st.sidebar.radio("", ("None", "Canny", "Sobel", "Prewitt"), key="border")#, "HED"#
 
     st.write("### Imagen")
 
