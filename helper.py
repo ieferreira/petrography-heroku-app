@@ -1,7 +1,8 @@
 import cv2
 import numpy as np 
 from PIL import Image
-from skimage import measure, color, io
+from skimage import measure, color, io, data, segmentation
+from skimage.future import graph
 from scipy import ndimage
 from skimage.segmentation import slic
 from skimage.segmentation import mark_boundaries
@@ -166,5 +167,75 @@ def binarize(img, lw=100, hg=255):
     return binary
 
 
+#! Hough Transform
+@st.cache(suppress_st_warning=True)
+def findLines(bordes, rho, theta, thr, mll, mlg):
+    lineas = cv2.HoughLinesP(bordes, rho, theta, thr, minLineLength=mll, maxLineGap=mlg)
+    return lineas
+@st.cache(suppress_st_warning=True)
+def drawLines(lineas, imagen):  
+    if lineas is not None:
+        for linea in lineas:
+            x1,y1,x2,y2 = linea[0]
+            # dibuja las lineas una a una en imagen, con color (255,0,0) y grosor de linea 1
+            cv2.line(imagen, (x1,y1), (x2,y2), (255, 0,0), 1)
+    else:
+        # por si no se encuentra lineas o el algoritmo no funciona con los params dados
+        raise ValueError("No se encontraron lineas con los parámetros dados")
+    return imagen
+@st.cache(suppress_st_warning=True)
+def findCircles(bordes,n, pm1, pm2, mnDis, mnRad,  mxRad):
+    circles = cv2.HoughCircles(bordes, cv2.HOUGH_GRADIENT, n,  param1=pm1,  param2=pm2,
+                            minDist=mnDis,  minRadius=mnRad, maxRadius=mxRad)
+    return circles
+
+#circulos = findCircles(imagen2,1,50,30,100,0,100)
+@st.cache(suppress_st_warning=True)
+def drawCircles(circulos, img, escala=None):
+
+    if circulos is not None:
+        circulos = np.uint16(np.around(circulos))
+        for punto in circulos[0, :]:
+            x, y, r = punto[0], punto[1], punto[2]
+
+            # circunferencia del circulo
+            cv2.circle(img, (x, y), r, (0, 255, 0), 2)
+            # pone el dato del valor como un texto adjunto
+            if escala is not None:
+                pixsUm = escala/100
+                um = r*pixsUm
+                cv2.putText(img,f"Tamano={round(um,1)}um\n Area = {round(np.pi*um**2,1)} um^2", (x+10,y+10), cv2.FONT_ITALIC, 0.5, (200,50,0,255),2)
+                 
+            else: 
+                cv2.putText(img,f"RADIO={r}px", (x+20,y+20), cv2.FONT_ITALIC, 0.5, (200,50,0,255),2)
+                cv2.putText(img,f"AREA={np.round(np.pi*(r**2),1)}px^2", (x+20,y+40), cv2.FONT_ITALIC, 0.5, (200,50,0,255),2)
 
 
+            # circulo para dibujar el radio, con color (0,122,255) y grosor de linea 3
+            cv2.circle(img, (x, y), 1, (0, 122, 255), 3)
+        return img
+    else:
+        raise ValueError("No se encontraron Círculos en la imagen que me pasaste con los parámetros dados")
+
+@st.cache(suppress_st_warning=True)
+def rag_merging(img):
+    def weight_mean_color(graph, src, dst, n):
+        diff = graph.nodes[dst]['mean color'] - graph.nodes[n]['mean color']
+        diff = np.linalg.norm(diff)
+        return {'weight': diff}
+
+    def merge_mean_color(graph, src, dst):
+        graph.nodes[dst]['total color'] += graph.nodes[src]['total color']
+        graph.nodes[dst]['pixel count'] += graph.nodes[src]['pixel count']
+        graph.nodes[dst]['mean color'] = (graph.nodes[dst]['total color'] /
+                                        graph.nodes[dst]['pixel count'])
+    labels = segmentation.slic(img, compactness=30, n_segments=400, start_label=1)
+    g = graph.rag_mean_color(img, labels)
+
+    labels2 = graph.merge_hierarchical(labels, g, thresh=35, rag_copy=False,
+                                    in_place_merge=True,
+                                    merge_func=merge_mean_color,
+                                    weight_func=weight_mean_color)
+    out = color.label2rgb(labels2, img, kind='avg', bg_label=0)
+    out = segmentation.mark_boundaries(out, labels2, (0, 0, 0))
+    return out, labels2 

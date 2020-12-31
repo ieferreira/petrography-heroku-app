@@ -77,6 +77,7 @@ if file:
             lw = st.sidebar.number_input("Lower threshold", 1, 500,100, step=10, key='l')
             hg = st.sidebar.number_input("Upper threshold (around twice or thrice lower)", 2, 500,200, step=10, key='s')
             img = canny_edge(img, lw, hg)
+            img_canny = img.copy()
             st.image(img, use_column_width=True)     
 
         elif bordes == "Sobel":
@@ -137,5 +138,33 @@ if file:
                 contours, nums = draw_borders(img,  img_org, treshold)
                 st.write(f"Granos encontrados usando contornos {len(nums)}")
                 st.image(contours, use_column_width=True)
+    
+    st.sidebar.markdown("### RAG Merging (Grain Counting)")
+    rag = st.sidebar.radio("RAG Merging", (False, True), key='ragmerg')
+
+    if rag ==True:
+        img_rag, numrag = rag_merging(img_org)
+        st.write(f"Se encuentran {len(np.unique(numrag))} usando RAG Merging")
+        st.image(img_rag, use_column_width=True)
+
+
+
+
+
+    # st.sidebar.markdown("### Circle Detection (fluid inclusions) ◉")
+    
+    # if st.sidebar.radio("Hough Circle Transform", (False, True), key="hough_cir"):           
+
+    #     st.write(f"Circles found using Hough")
+        
+    #     dp = st.sidebar.number_input("dp: Inverse Ratio of Acummulator to Image resolution", 1.0, 3.0,1.5, step=0.1, key='dp')
+    #     pm1 = st.sidebar.number_input("pm1: ", 5, 40,10, step=5, key='pm1')
+    #     pm2 = st.sidebar.number_input("pm2: ", 0,120,25, step=5, key='pm2')
+    #     minDs = st.sidebar.number_input("minDs", 0, 100,70, step=10, key='minDs')
+    #     minRd = st.sidebar.number_input("maxDs: ", 0, 100,0, step=10, key='minRd')
+    #     maxRd = st.sidebar.number_input("maxRd: Maximum circle radius", 10, 110,40, step=10, key='maxRd')
+    #     circulos = findCircles(img,dp,pm1,pm2,minDs,minRd,maxRd)
+    #     imgCirculos = drawCircles(circulos, img_org)
+    #     st.image(imgCirculos, use_column_width=True)
 
 st.markdown("Programmed by Iván Ferreira, UnalGeo-Bogotá (2020). [Github! 🎯](https://github.com/ieferreira)")
