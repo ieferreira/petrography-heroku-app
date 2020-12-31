@@ -145,7 +145,7 @@ if file:
     if rag ==True:
         img_rag, numrag = rag_merging(img_org)
         st.write(f"Se encuentran {len(np.unique(numrag))} usando RAG Merging")
-        st.image(img_rag, use_column_width=True)
+        st.image(img_rag, use_column_width=True, clamp=True)
 
 
 
