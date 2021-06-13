@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 streamlit
 opencv-python-headless==4.2.0.32
 numpy
 pillow
 pandas
+=======
+streamlit==0.61.0
+opencv-contrib-python
+numpy==1.16.5
+pillow==7.2.0
+>>>>>>> 41a0fcc94e02f04e37d6c932d73b560dcc18160a
 scikit-image
 scipy

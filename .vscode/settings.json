@@ -1,8 +1,15 @@
 {
     "workbench.colorCustomizations": {
+<<<<<<< HEAD
         "activityBar.background": "#123414",
         "titleBar.activeBackground": "#1A491D",
         "titleBar.activeForeground": "#F5FCF6"
     },
     "python.pythonPath": "C:\\Users\\ferreira\\anaconda3\\python.exe"
+=======
+        "activityBar.background": "#04360A",
+        "titleBar.activeBackground": "#064B0D",
+        "titleBar.activeForeground": "#EFFEF1"
+    }
+>>>>>>> 41a0fcc94e02f04e37d6c932d73b560dcc18160a
 }
