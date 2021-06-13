@@ -9,12 +9,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-# def local_css(file_name):
-#     with open(file_name) as f:
-#         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 
-# local_css("style.css")
+local_css("style.css")
 
 st.markdown("""## Computer vision algorithms and thin sections (petrography)""")
 st.sidebar.title("Algorithms and parameters")
