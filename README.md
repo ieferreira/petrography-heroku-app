@@ -4,9 +4,7 @@ A Heroku web app that aims at helping in grain counting and thin section descrip
 
 ### Demo
 
-Short demo of how it works:
-
-<img src="demo_gif.gif" width="800" height="400"/>
+Demo available in [https://github.com/ieferreira/petrography-heroku-app](https://github.com/ieferreira/petrography-heroku-app)
 
 ### Heroku deployed app
 
